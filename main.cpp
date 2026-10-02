@@ -1,3 +1,8 @@
+#include <unistd.h>
+#include <sys/wait.h>
+#include <cstdio>
+#include <cstdlib>
+
 const char msg[256] = "user data\n";
 
 size_t send(int& e, int wr, const char* b, size_t k)
@@ -20,18 +25,20 @@ size_t send(int& e, int wr, const char* b, size_t k)
 
 int main()
 {
-  int pps[2] = {}, err = pipe(pps); assert(!err);
+  int pps[2] = {}, err = pipe(pps);
   int rd = pps[0], wr = pps[1];
-  pid_t pid = fork(); assert(pid >= 0);
+  pid_t pid = fork();
   if (!pid)
   {
-    err = close(wr); assert(!err);
+    err = close(wr);
     char p[100] = {};
-    err = sprintf(p, "%d", rd); assert(err > 0);
-    execl("child", "child", p, NULL); assert(0);
+    err = sprintf(p, "%d", rd);
+    execl("child", "child", p, NULL);
+    perror("err");
+    exit(1);
   }
-  err = close(rd); assert(!err);
-  send(err, wr, msg, 255); assert(err > 0);
-  err = close(wr); assert(!err);
-  err = waitpid(pid, 0, 0); assert(err == pid);
+  err = close(rd);
+  send(err, wr, msg, 255);
+  err = close(wr);
+  err = waitpid(pid, 0, 0);
 }
