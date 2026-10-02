@@ -1,6 +1,22 @@
 const char msg[256] = "user data\n";
 
-size_t send(int& err, int wr, const char* b, size_t k);
+size_t send(int& e, int wr, const char* b, size_t k)
+{
+  size_t r = 0;
+  while (1)
+  {
+    if (r >= k)
+    {
+      e = write(wr, b + r, k - r);
+      if (e < 0)
+      {
+        break;
+      }
+      r += e;
+    }
+  }
+  return r;
+}
 
 int main()
 {
