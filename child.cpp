@@ -1,7 +1,9 @@
 #include <unistd.h>
 #include <sys/wait.h>
+#include <cstdlib>
+#include <cstdio>
 
-size_t recv(int& err, int rd, char* b, size_t k) {
+size_t recv(int& e, int rd, char* b, size_t k) {
   size_t r = 0;
   while (1)
   {
